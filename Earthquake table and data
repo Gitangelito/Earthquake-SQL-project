@@ -40,6 +40,8 @@ Table Created
     timezone VARCHAR(50)
 
 
+-- Data after cleaning
+
 INSERT INTO earthquake_data (id, magnitude, type, title, date, time, felt, cdi, mmi, alert, status, tsunami, sig, net, nst, dmin, rms, gap, magType, geometryType, depth, latitude, longitude, place, distanceKM, placeOnly, location, continent, country, subnational, city, locality, postcode, timezone) 
 VALUES
 
