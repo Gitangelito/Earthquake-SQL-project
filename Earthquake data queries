@@ -1,0 +1,95 @@
+select * from earthquakes.earthquake_test;
+
+
+-- SELECT COUNT OF ROWS 
+select  count(*) from  earthquakes.earthquake_test;
+
+-- SELECT MIN, MAX, AVG, stdev AND COUNTS VALUES
+select Min(magnitude), MAX(magnitude), avg(magnitude), stddev(magnitude),  count(magnitude) AS Total_Earthquakes
+from earthquakes.earthquake_test;
+
+-- SELECT ALL COUNTRIES THAT ARE NOT IN NULL OR BLANK SPACES
+SELECT country 
+from earthquakes.earthquake_test where country is not null
+AND country != '';
+
+-- SELECT THE COUNTS OF ALL THE COUNTRIES
+SELECT country , count(country)
+from earthquakes.earthquake_test where country is not null
+AND country != ''
+group by country; 
+
+
+
+-- SELECTS ALL MIN AND VALUES FROM THE PLACES
+select place, Min(magnitude), MAX(magnitude)
+from earthquakes.earthquake_test
+group by place
+order by min(magnitude);
+
+
+-- SELECT THE MIN & MAX VALUE AMONG ALL PLACES
+select place, magnitude
+from earthquakes.earthquake_test
+where magnitude = (select Min(magnitude) from  earthquakes.earthquake_test)
+OR magnitude = (select max(magnitude) from  earthquakes.earthquake_test);
+
+-- SELECT COUNTRY(IES) WHERE ALL EARTHQUAKES HAPPENED
+select *
+from earthquakes.earthquake_test
+where country = 'Peru'; 
+
+-- PLACES AND MAGNITUDE BY DATE FOR 2024
+select place, magnitude, date
+from earthquakes.earthquake_test 
+where date > '2024-01-01'
+order by date asc;
+
+-- DISTRIBUTION ANALYSIS - MAGNITUDE DISTRIBUTION
+-- FREQUENCY COUNT
+
+select magnitude, count(*) as Frequency
+from earthquakes.earthquake_test
+group by magnitude 
+order by magnitude desc;
+
+-- PLACE AND COUNTS OF EARTHQUAKE MAGNITUDES
+select title, count(magnitude), magnitude
+from earthquakes.earthquake_test
+group by title, magnitude
+order by title desc; 
+
+-- HIStOGRAM CHATGPT
+-- Counts of earthquakes with different intensities
+SELECT
+	case 
+		when magnitude < 2 then '0-1.9'
+        when magnitude < 3 then '2-2.9'
+        when magnitude < 4 then '3-3.9'
+        when magnitude < 5 then '4-4.9'
+        when magnitude < 6 then '5-5.9'
+        when magnitude < 7 then '6-6.9'
+        ELSE '7+'
+	END AS magnitude_range,
+    count(*) as frequency
+from earthquakes.earthquake_test
+group by magnitude_range
+order by magnitude_range; 
+
+
+-- Total Earthquakes that happened during 24hrs
+SELECT
+	case 
+		when time between '05:00:00' AND '11:59:59' then 'Morning - 05:00 AM TO 12:00 PM'
+        when time between '12:00:00' AND '16:59:59' then 'Afternoon - 12:00 PM TO 5:00 PM'
+        when time between '17:00:00' AND '20:59:59' then 'Evening - 5:00 PM TO 9:00 PM'
+        Else 'Night - 9:00 PM TO 5:00 AM'
+       
+	END AS time_range,
+    count(*) as Earthquakes_count_day
+from earthquakes.earthquake_test
+-- where country = 'Peru'
+group by time_range 
+order by time_range ASC;
+
+----- Incomplete keep adding-------
