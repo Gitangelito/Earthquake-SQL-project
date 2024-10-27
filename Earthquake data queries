@@ -37,7 +37,7 @@ OR magnitude = (select max(magnitude) from  earthquakes.earthquake_test);
 -- SELECT COUNTRY(IES) WHERE ALL EARTHQUAKES HAPPENED
 select *
 from earthquakes.earthquake_test
-where country = 'Peru'; 
+where country = ''; 
 
 -- PLACES AND MAGNITUDE BY DATE FOR 2024
 select place, magnitude, date
@@ -63,7 +63,7 @@ order by title desc;
 -- Counts of earthquakes with different intensities
 SELECT
 	case 
-		when magnitude < 2 then '0-1.9'
+	when magnitude < 2 then '0-1.9'
         when magnitude < 3 then '2-2.9'
         when magnitude < 4 then '3-3.9'
         when magnitude < 5 then '4-4.9'
@@ -80,7 +80,7 @@ order by magnitude_range;
 -- Total Earthquakes that happened during 24hrs
 SELECT
 	case 
-		when time between '05:00:00' AND '11:59:59' then 'Morning - 05:00 AM TO 12:00 PM'
+	when time between '05:00:00' AND '11:59:59' then 'Morning - 05:00 AM TO 12:00 PM'
         when time between '12:00:00' AND '16:59:59' then 'Afternoon - 12:00 PM TO 5:00 PM'
         when time between '17:00:00' AND '20:59:59' then 'Evening - 5:00 PM TO 9:00 PM'
         Else 'Night - 9:00 PM TO 5:00 AM'
@@ -88,7 +88,7 @@ SELECT
 	END AS time_range,
     count(*) as Earthquakes_count_day
 from earthquakes.earthquake_test
--- where country = 'Peru'
+-- where country = ''
 group by time_range 
 order by time_range ASC;
 
