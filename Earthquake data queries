@@ -92,4 +92,161 @@ from earthquakes.earthquake_test
 group by time_range 
 order by time_range ASC;
 
------ Incomplete keep adding-------
+
+
+-- DEPTH DISTRIBUTION
+
+select depth, count(*) as depth_inKM
+from earthquakes.earthquake_test
+group by depth 
+order by depth; 
+
+-- COUNT ALL DEPTHS
+select depth, count(depth)
+from earthquakes.earthquake_test
+where depth <=70
+group by depth;
+
+-- select count(depth)
+-- from earthquakes.earthquake_test
+-- where depth >=300;
+-- where depth >= 70 and depth <=300;
+-- where depth >= 70 and 300;
+
+
+
+-- CATEGORIZED DEPTH FREQUENCY
+
+SELECT
+	case 
+		when depth <= 70 then 'Shallow'
+        when depth  >= 70 and depth <= 300 then 'Intermediate'
+        ELSE 'Deep'
+	END AS Depth_frequency,
+    count(*) as frequency
+from earthquakes.earthquake_test
+group by Depth_frequency
+order by Depth_frequency asc; 
+
+
+
+-- SELECT MIN, MAX, AVG, stdev AND COUNTS VALUES OF DEPTH
+select Min(depth), MAX(depth), avg(depth), stddev(depth),  count(depth) AS Total_Earthquakes
+from earthquakes.earthquake_test;
+
+-- LOCATION DISTRIBUTION
+
+
+SELECT country , count(country)
+from earthquakes.earthquake_test 
+where country is not null
+AND country != ''
+group by country;
+
+-- LOCATION FREQUENCY
+
+SELECT location , count(*) as frequency
+from earthquakes.earthquake_test 
+where country is not null
+AND country != ''
+group by location
+order by location desc;
+
+
+
+-- PERCENTAGE DISTRIBUTION
+
+select depth,
+count(*) AS frequency,
+(count(*)/ (select count(*) from earthquakes.earthquake_test )) * 100 as percentage
+from earthquakes.earthquake_test
+group by depth
+order by depth desc;
+
+
+-- YEARLY FREQUENCY / EARTHQUAKE COUNT PER YEAR ----------------------------------------------------------------------------
+
+SELECT year(date) as year,
+count(*) as Total_earthquakes
+from earthquakes.earthquake_test 
+group by year(date)
+order by year;
+
+-- TREND ANALYSIS with guidance
+-- Using LAG
+Select Year(date) as Year_prox,
+	count(*) as frequency,
+	LAG(count(*),1,0) over (order by Year(date)) AS prev_year_count,
+	count(*) - LAG(count(*),1,0) over (order by Year(date)) as frequency_change
+	from earthquakes.earthquake_test
+group by Year(date)
+order by Year_prox;
+
+-- MOVING AVERAGE per Year
+
+Select Year(date) as Year_prox,
+	count(*) as frequency,
+    AVG (count(*)) over (order by Year(date) ROWS between 2 preceding and 2 following) as moving_avg
+	from earthquakes.earthquake_test
+group by Year(date)
+order by Year_prox;
+
+
+-- Earthquake Count per Month
+Select month(date) as month_count,
+	count(*) as frequency
+    from earthquakes.earthquake_test
+group by Month(date)
+order by month_count;
+
+-- Seasonal Fluctuation
+
+SELECT
+	case 
+		when Month(date) IN (1,2,3) then 'Q1'
+        when Month(date) IN (4,5,6) then 'Q2'
+        when Month(date) IN (7,8,9) then 'Q3'
+        else 'Q4'
+	END AS Quarter,
+    count(*) as frequency
+from earthquakes.earthquake_test
+group by Quarter
+order by Quarter; 
+
+-- MOVING AVERAGE per Month
+
+
+Select Month(date) as Month_prox,
+	count(*) as frequency,
+    AVG (count(*)) over (order by Month(date) ROWS between 1 preceding and 1 following) as moving_avg
+	from earthquakes.earthquake_test
+group by Month(date)
+order by Month_prox;
+
+-- select version();
+-- Checks values in table
+-- DESCRIBE earthquakes.earthquake_test;
+
+
+
+-- TIME OF DAY / EARTHQUAKE COUNT PER HOUR 
+
+SELECT HOUR(time) as Hour_count,
+	count(*) as Hour_frequency
+from earthquakes.earthquake_test 
+group by Hour(time)
+order by Hour_count;
+
+-- MOVING AVERAGE HOURLY
+
+Select hour(time) as time_prox,
+	count(*) as frequency,
+    AVG (count(*)) over (order by  hour(time)  ROWS between 1 preceding and 1 following) as moving_avg
+	from earthquakes.earthquake_test
+group by hour(time)
+order by time_prox;
+
+
+
+
+
